@@ -6,6 +6,7 @@ import { scenarios } from "@/lib/scenarios";
 import ScenarioCard from "@/components/ScenarioCard";
 import ChoicePanel from "@/components/ChoicePanel";
 import ResultPanel from "@/components/ResultPanel";
+import GlossaryDrawer from "@/components/GlossaryDrawer";
 
 export default function Home() {
   const [phase, setPhase] = useState<AppPhase>("landing");
@@ -13,6 +14,7 @@ export default function Home() {
   const [selectedChoice, setSelectedChoice] = useState<Choice | null>(null);
   const [result, setResult] = useState<SimulationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [glossaryOpen, setGlossaryOpen] = useState(false);
 
   function handleSelectScenario(scenario: Scenario) {
     setSelectedScenario(scenario);
@@ -64,9 +66,16 @@ export default function Home() {
           >
             XR Sim
           </button>
-          <span className="text-xs text-[#9C9A94]">Financial Decision Simulator</span>
+          <button
+            onClick={() => setGlossaryOpen(true)}
+            className="text-xs text-[#9C9A94] hover:text-[#1C1B19] transition-colors border border-[#E5E3DC] rounded px-2.5 py-1 hover:border-[#1C1B19]"
+          >
+            Glossary
+          </button>
         </div>
       </header>
+
+      {glossaryOpen && <GlossaryDrawer onClose={() => setGlossaryOpen(false)} />}
 
       <div className="max-w-3xl mx-auto px-6 py-10">
         {phase === "landing" && (

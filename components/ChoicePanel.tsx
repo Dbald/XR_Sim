@@ -2,6 +2,7 @@
 
 import { Scenario, Choice } from "@/lib/types";
 import TagBadge from "./TagBadge";
+import RichText from "./RichText";
 
 interface Props {
   scenario: Scenario;
@@ -24,9 +25,7 @@ export default function ChoicePanel({ scenario, onChoose, onBack }: Props) {
           {scenario.title}
         </h2>
         <div className="bg-[#F5F4F0] border border-[#E5E3DC] rounded-lg p-5">
-          <p className="text-sm leading-relaxed text-[#3A3834]">
-            {scenario.context}
-          </p>
+          <RichText text={scenario.context} className="text-sm leading-relaxed text-[#3A3834]" />
         </div>
       </div>
 
