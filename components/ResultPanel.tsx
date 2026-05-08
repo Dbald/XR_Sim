@@ -3,6 +3,7 @@
 import { SimulationResult, Scenario, Choice } from "@/lib/types";
 import ProjectionChart from "./ProjectionChart";
 import TagBadge from "./TagBadge";
+import RichText from "./RichText";
 
 interface Props {
   result: SimulationResult;
@@ -16,16 +17,11 @@ function ImpactStat({ label, value }: { label: string; value: number }) {
   return (
     <div className="text-center">
       <p className="text-xs text-[#9C9A94] mb-1">{label}</p>
-      <p
-        className={`text-lg font-semibold ${
-          positive ? "text-green-700" : "text-red-600"
-        }`}
-      >
-        {positive ? "+" : ""}
-        {value >= 1000 || value <= -1000
+      <p className={`text-lg font-semibold ${positive ? "text-green-700" : "text-red-600"}`}>
+        {positive ? "+" : "-"}
+        {Math.abs(value) >= 1000
           ? `$${(Math.abs(value) / 1000).toFixed(1)}k`
           : `$${Math.abs(value)}`}
-        {value < 0 && value > -1000 ? "" : ""}
       </p>
     </div>
   );
@@ -56,14 +52,11 @@ export default function ResultPanel({ result, scenario, choice, onReset }: Props
       </div>
 
       <div className="bg-[#F5F4F0] border border-[#E5E3DC] rounded-lg p-5">
-        <p className="text-sm leading-relaxed text-[#3A3834]">{result.consequence}</p>
+        <RichText text={result.consequence} className="text-sm leading-relaxed text-[#3A3834]" />
       </div>
 
       <div className="border border-[#E5E3DC] rounded-lg p-5 bg-white">
-        <ProjectionChart
-          data={result.projectionPoints}
-          chosenLabel={choice.label}
-        />
+        <ProjectionChart data={result.projectionPoints} chosenLabel={choice.label} />
       </div>
 
       <div className="border border-[#E5E3DC] rounded-lg p-5 bg-white">
@@ -81,23 +74,21 @@ export default function ResultPanel({ result, scenario, choice, onReset }: Props
         <p className="text-xs font-medium text-[#9C9A94] uppercase tracking-wider mb-2">
           Financial insight
         </p>
-        <p className="text-sm text-[#3A3834] leading-relaxed">{result.insight}</p>
+        <RichText text={result.insight} className="text-sm text-[#3A3834] leading-relaxed" />
       </div>
 
       <div className="border border-[#E5E3DC] rounded-lg p-5">
         <p className="text-xs font-medium text-[#9C9A94] uppercase tracking-wider mb-2">
           What if you had chosen differently?
         </p>
-        <p className="text-sm text-[#3A3834] leading-relaxed">{result.alternativeOutcome}</p>
+        <RichText text={result.alternativeOutcome} className="text-sm text-[#3A3834] leading-relaxed" />
       </div>
 
       <div className="bg-[#F5F4F0] border border-[#E5E3DC] rounded-lg p-5">
         <p className="text-xs font-medium text-[#9C9A94] uppercase tracking-wider mb-2">
           Reflection
         </p>
-        <p className="text-sm text-[#1C1B19] font-medium leading-relaxed">
-          {result.reflection}
-        </p>
+        <RichText text={result.reflection} className="text-sm text-[#1C1B19] font-medium leading-relaxed" />
       </div>
 
       <div className="pt-2 pb-8">
