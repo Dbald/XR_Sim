@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { Scenario, Choice } from "@/lib/types";
+import { jsonrepair } from "jsonrepair";
 
 const client = new Anthropic();
 
@@ -73,10 +74,19 @@ For choiceQuality:
     }
 
     let jsonText = textBlock.text.trim();
-    // Strip markdown code fences if present
-    jsonText = jsonText.replace(/^```(?:json)?\n?/i, "").replace(/\n?```$/i, "");
 
-    const result = JSON.parse(jsonText);
+    // Strip markdown code fences (handles ```json, ```, and leading/trailing whitespace)
+    jsonText = jsonText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+
+    // Isolate the JSON object — discard any prose before/after the braces
+    const start = jsonText.indexOf("{");
+    const end = jsonText.lastIndexOf("}");
+    if (start !== -1 && end !== -1 && end > start) {
+      jsonText = jsonText.slice(start, end + 1);
+    }
+
+    // jsonrepair fixes common LLM issues: unescaped quotes, trailing commas, bare newlines
+    const result = JSON.parse(jsonrepair(jsonText));
     return NextResponse.json(result);
   } catch (error) {
     console.error("Simulation error:", error);
